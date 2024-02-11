@@ -25,7 +25,7 @@ MiniMaestro maestroHead(maestroSerial);
 
 void setup() {
 
-Serial.begin(19200);
+//Serial.begin(19200); //** Uncomment for debugging
 maestroSerial.begin(9600);
 
 }
@@ -42,14 +42,14 @@ chn8 = map (duration8,1000,2000,-255,255);
 
 
 // ** Debugging
- Serial.print ("chn7: ");
- Serial.print (chn7);
- Serial.print (" | ");
- Serial.print ("chn8: ");
- Serial.print (chn8);
- Serial.print (" | ");
- Serial.println();  // Move to the next line for better readability
- delay(200);  // Adjust the delay based on your desired update rate
+ //Serial.print ("chn7: ");
+ //Serial.print (chn7);
+ //Serial.print (" | ");
+ //Serial.print ("chn8: ");
+ //Serial.print (chn8);
+ //Serial.print (" | ");
+ //Serial.println();  // Move to the next line for better readability
+ //delay(200);  // Adjust the delay based on your desired update rate
 
 
 // ** Trigger Animations
@@ -66,7 +66,7 @@ chn8 = map (duration8,1000,2000,-255,255);
  if (chn8 > 0) {
    maestroHead.restartScript(2); //Activate Doors and Arms 
    //delay(1000); // Add a delay if necessary
+ }
 
 
-}
 }
