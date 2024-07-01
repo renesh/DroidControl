@@ -1,0 +1,61 @@
+/*******************************************************************************
+
+
+ *******************************************************************************/
+// Import libraries for Maestro and to use SoftwareSerial
+#include <PololuMaestro.h>
+#include <SoftwareSerial.h>
+
+
+
+//Setup RC Channels
+int pin1 = x;  // This is input for RC (channel 3) - Utility Arm
+
+//Setup default RC signal durations
+int duration1 = 1500; // Duration of the pulse from the RC
+
+float time;
+
+//Setup default value of channels
+int chn3 = -10;
+
+//Scripts
+int S0 = 0; //Activiate utility arm
+
+//Setup Serial connection to Maestro
+SoftwareSerial maestroSerial(7, 8); //Pin 7 RX, Pin 8 TX
+MiniMaestro maestroHead(maestroSerial);
+
+
+// The setup routine runs once when you press reset.
+void setup() {
+
+  //Serial.begin(9600); // ** uncomment to allow debugging**
+  maestroSerial.begin(9600);
+  time = millis();
+  }
+
+
+// The loop routine runs over and over again forever.
+void loop() {
+
+//Measures the input from rc channels
+duration1 = pulseIn(pin1, HIGH); //Measures the input from rc channel 3
+
+//Sets the value of each channel to a mapped value
+chn3 = map (duration1,1000,2000,-255,255);
+
+// ** Trigger Animations
+// Add BEGIN and QUIT to POLOLU CONTROL AFTER SEQUENCE/SCRIPT IS GENERATED
+
+//Switch 3 - Utility Arm - 
+  if (chn3 > 0) {
+   maestroHead.restartScript(S0); //Activate Utility arm
+      {
+  if (chn3 < 0) {
+   maestroHead.restartScript(S1); //Deactivate Utility arm
+      }
+
+
+
+}
