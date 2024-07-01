@@ -2,15 +2,20 @@
 
 
  *******************************************************************************/
+#include <PololuMaestro.h>
+#include <SoftwareSerial.h>
+
+
 
 //Setup RC Channels
-int pin1 = x;  // This is input for RC (channel 3) - Head Bounce
+int pin1 = x;  // This is input for RC (channel 3) - Utility Arm
 int pin2 = x;  // This is input for RC (channel 5) - Rotary Sound Select
 int pin3 = x;  // This in input for RC (channel 6) - Rotary Tool Select
 int pin4 = x;  // This in input for RC (channel 7) - Dome Doors, Arms, Periscope
 int pin5 = x;  // This in input for RC (channel 8) - Saw, IA, Booster
 int pin6 = x;  // This in input for RC (channel 10) -  Sound Play
 
+//Setup default RC signal durations
 int duration1 = 1500; // Duration of the pulse from the RC
 int duration2 = 1500; // Duration of the pulse from the RC
 int duration3 = 1500; // Duration of the pulse from the RC
@@ -20,16 +25,42 @@ int duration6 = 1500; // Duration of the pulse from the RC
 
 float time;
 
+// Not sure if this is needed.
+
+int chn3 = -10;
+int chn5 = -10;
+int chn6 = -10;
+int chn7 = -10;
+int chn8 = -10;
+int chn10 = -10;
+
+//Scripts
+int S0 = 0; //Activiate utility arm
+int S1 = 1; //Deactiviate utility arm
+int S2 = 2; //
+int S3 = 3; //
+int S4 = 4; // 
+int S5 = 5; // 
+int S6 = 10; // 
+int S7 = 10; //
+int S8 = 10; //
+int S9 = 10; //
+
+
+//Setup Serial connection to Maestro
+
+SoftwareSerial maestroSerial(7, 8); //Pin 7 RX, Pin 8 TX
+MiniMaestro maestroHead(maestroSerial);
+
+
 // The setup routine runs once when you press reset.
 void setup() {
 
   //Serial.begin(9600); // ** uncomment to allow debugging**
   
-  time = millis(); ///////////////STARTS COUNTING TIME IN MILLISECONDS/////////////
-
-  duration1 = pulseIn(pin1, HIGH); //Measures the input from rc drive 1
-  duration2 = pulseIn(pin2, HIGH); //Measures the input from rc drive 2
+  maestroSerial.begin(9600);
   
+  time = millis(); ///////////////STARTS COUNTING TIME IN MILLISECONDS/////////////
 }
 
 
@@ -43,44 +74,85 @@ duration4 = pulseIn(pin4, HIGH); //Measures the input from rc channel 7
 duration5 = pulseIn(pin5, HIGH); //Measures the input from rc channel 8
 duration6 = pulseIn(pin6, HIGH); //Measures the input from rc channel 10
 
+chn3 = map (duration1,1000,2000,-255,255);
+chn5 = map (duration2,1000,2000,-255,255);
+chn6 = map (duration3,1000,2000,-255,255);
+chn7 = map (duration4,1000,2000,-255,255);
+chn8 = map (duration5,1000,2000,-255,255);
+chn10 = map (duration6,1000,2000,-255,255);
 
-// Sets Speed based in Switch/Channel 9
-// Default sets speed to 0
-// Position 1 sets speed to 1/6th the max
-// Position 3 sets speed to 1/4th the max
+// ** Trigger Animations
+// Add BEGIN and QUIT to POLOLU CONTROL AFTER SEQUENCE/SCRIPT IS GENERATED
 
-if (duration3 < 1000) {
-   speedselect = 255;
+//Switch 3 - Utility Arm - 
+  if (chn3 > 0) {
+   maestroHead.restartScript(S0); //Activate Utility arm
+      {
+  if (chn3 < 0) {
+   maestroHead.restartScript(S1); //Deactivate Utility arm
+      }
+
+
+// Sets functions of rotary switch 5
+// Animation Controls
+
+
+if (chn5 < 0) {
+   //Do Nothing
   }
 
-if ((duration3 > 1000) && (duration3 < 1600)){
-   speedselect = 6;
+if ((chn5 > 0) && (chn5 < 60)){
+   //Set 1 of functions
+   if (chn7 > 0) {
+   maestroHead.restartScript(S1); //Activate Dome Doors and Arms
+      {
+  if (chn7 < 0) {
+   maestroHead.restartScript(S2); //Deactivate Dome Doors and Arm
+      }
   }
 
-if ((duration3 > 1600) && (duration3 < 2000)){
-   speedselect = 4;
+if ((chn5 > 70) && (chn5 < 130)){
+   //Set 2 of functions
+
   }
 
-// Set Motor Speeds
-  motor1.setSpeed(motorspeed1/speedselect);  // Motor 1 runs at RC input.
-  motor2.setSpeed(motorspeed2/speedselect);   // Motor 2 runs RC Input.
+if ((chn5 > 140) && (chn5 < 200)){
+   //Set 3 of functions
 
-//** Debugging below
+  }
 
-Serial.print (motorspeed1/speedselect);
-Serial.print (" ");
-Serial.print (motorspeed2/speedselect);
-Serial.print (" ");
-Serial.print (duration1);
-Serial.print (" ");
-Serial.print (duration2);
-Serial.print (" ");
-Serial.print (duration3);
-Serial.print (" ");
-Serial.print (speedselect);
-Serial.print (" ");
-Serial.println ();
-delay(100);
-  
+if ((chn5 > 210) && (chn5 < 255)){
+   //Set 4 of functions
+
+  }
+
+  // Sets functions of rotary switch 6
+  // Audio Select
+
+
+if (chn6 < 0) {
+   //Do Nothing
+  }
+
+if ((chn6 > 0) && (chn6 < 60)){
+   //Set 1 of functions
+
+  }
+
+if ((chn6 > 70) && (chn6 < 130)){
+   //Set 2 of functions
+
+  }
+
+if ((chn6 > 140) && (chn6 < 200)){
+   //Set 3 of functions
+
+  }
+
+if ((chn6 > 210) && (chn6 < 255)){
+   //Set 4 of functions
+
+  }
+
 
 }
