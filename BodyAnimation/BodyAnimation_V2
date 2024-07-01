@@ -30,7 +30,7 @@ MiniMaestro maestroHead(maestroSerial);
 // The setup routine runs once when you press reset.
 void setup() {
 
-  //Serial.begin(9600); // ** uncomment to allow debugging**
+//Serial.begin(9600); // ** uncomment to allow debugging**
   maestroSerial.begin(9600);
   time = millis();
   }
@@ -56,6 +56,11 @@ chn3 = map (duration1,1000,2000,-255,255);
    maestroHead.restartScript(S1); //Deactivate Utility arm
       }
 
-
+//Debugging
+ Serial.print ("chn3 value: ");
+ Serial.print (chn3);
+ Serial.print (" | ");
+ Serial.println();  // Move to the next line for better readability
+ delay(200);  // Adjust the delay based on your desired update rate
 
 }
