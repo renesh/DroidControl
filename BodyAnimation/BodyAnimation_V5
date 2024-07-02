@@ -1,0 +1,98 @@
+
+/*******************************************************************************
+Script 0 - Util arms
+Script 1 - RDoor and Saw
+
+ *******************************************************************************/
+// Import libraries for Maestro and to use SoftwareSerial
+#include <PololuMaestro.h>
+#include <SoftwareSerial.h>
+
+
+
+//Setup RC Channels
+int pin1 = 3;  // This is input for RC (channel 3) - Utility Arm
+int pin2 = 4;  // This is input for RC (channel 5) - 
+int pin3 = 5;  // This is input for RC (channel 6) - 
+int pin4 = 6;  // This is input for RC (channel 7) - 
+int pin5 = 7;  // This is input for RC (channel 8) - 
+int pin6 = 8;  // This is input for RC (channel 10) - 
+
+//Setup default RC signal durations
+int duration1 = 1500; // Duration of the pulse from the RC
+int duration4 = 1500; // Duration of the pulse from the RC
+
+float time;
+
+//Setup default value of channels
+int chn3 = -10;
+
+
+
+int chn7 = -10;
+
+//Scripts
+int ActUtil = 0; //Activiate utility arm
+int DeActUtil = 1; //Activiate utility arm
+
+//Setup Serial connection to Maestro
+SoftwareSerial maestroSerial(12, 13); //Pin 12 RX, Pin 13 TX
+MiniMaestro maestroHead(maestroSerial);
+
+
+// The setup routine runs once when you press reset.
+void setup() {
+
+  Serial.begin(19200); // ** uncomment to allow debugging**
+  maestroSerial.begin(9600);
+  time = millis();
+  }
+
+
+// The loop routine runs over and over again forever.
+void loop() {
+
+//Measures the input from rc channels
+duration1 = pulseIn(pin1, HIGH); //Measures the input from rc channel 3
+
+
+duration4 = pulseIn(pin4, HIGH); //Measures the input from rc channel 3
+
+
+//Sets the value of each channel to a mapped value
+
+chn3 = map (duration1,1000,2000,-255,255);
+
+
+
+chn7 = map (duration4,1000,2000,-255,255);
+
+// ** Trigger Animations
+// Add BEGIN and QUIT to POLOLU CONTROL AFTER SEQUENCE/SCRIPT IS GENERATED
+
+//Util Arms
+  if (chn3 > 0) {
+   maestroHead.restartScript(1);    //Activate Utility arm
+  }
+  
+  if (chn3 < 0) {
+
+      }
+
+//RDoor and Saw
+  if (chn7 > 0) {
+   maestroHead.restartScript(0);    //Activate Utility arm
+  }
+  
+  if (chn7 < 0) {
+
+      }
+
+//Debugging
+ Serial.print ("chn3 value: ");
+ Serial.print (chn3);
+ Serial.print (" | ");
+ Serial.println();  // Move to the next line for better readability
+ delay(200);  // Adjust the delay based on your desired update rate
+
+}
