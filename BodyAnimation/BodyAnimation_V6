@@ -1,10 +1,10 @@
 
 /*******************************************************************************
 
-x Chn1 Drive		Stick	
-x chn2 Drive		Stick	
-Chn3 Utility Arm	Up/Down	Stick	
-x Chn4 Head Rotate	Left/Right	Stick	
+x Chn1 Drive		Stick	  This connects to the drive arduino
+x chn2 Drive		Stick	  This connects to the drive arduino
+Chn3 Utility Arm	Stick   	
+x Chn4 Head Rotate	Left/Right	Stick	  This connects to the drive arduino 
 Chn5 (rotary) Animation Control Seg 1 = 0 -  50.   Seg 2 = 60 - 160. Seg 3 = 160 - 255.
 Chn6 (rotary) Sound Other / Grumpy / Annoyed / Chatty
 Chn7 Seg 2: Rdoor + SAW . Seg 3: Dome Door + Arms	Depends on 5	2 position switch	
@@ -17,8 +17,6 @@ Chn10 Sound Play		2 position switch
 /* Import libraries for Maestro and to use SoftwareSerial */
 #include <PololuMaestro.h>
 #include <SoftwareSerial.h>
-
-
 
 /* Setup RC Channels */
 int pin3 = 3;  // This is input for RC (channel 3) - Utility Arm
