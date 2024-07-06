@@ -33,3 +33,8 @@ player.playSpecified(random(10, 16)); /* CHATTY*/
 player.playSpecified(random(16, 29)); /* OTHER*/
 player.playSpecified((29)); /* IMPMarch*/
 }
+
+
+  Serial.print("Playing sound: ");
+  Serial.println((int16_t)player.getPlayingSound());
+  delay(500);
