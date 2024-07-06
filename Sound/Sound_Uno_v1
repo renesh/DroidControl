@@ -1,1 +1,35 @@
 
+
+// Default sound volume at startup
+// 0 = full volume, 255 off
+byte vol = 30;
+
+#include <MP3Trigger.h>
+#include <DYPlayerArduino.h> //RM
+
+// Satisfy IDE, which only needs to see the include statment in the ino.
+#ifdef dobogusinclude
+#include <spi4teensy3.h>
+#endif
+
+//DY::Player player; //RM
+DY::Player player(&Serial3);
+MP3Trigger mp3Trigger;
+
+
+void setup() {
+
+  mp3Trigger.setup();
+  mp3Trigger.setVolume(vol);
+
+  player.begin(); //RM
+  player.setVolume(vol); //RM
+
+
+void loop() {
+ 
+player.playSpecified(random(01, 10)); /* GRUMPY*/
+player.playSpecified(random(10, 16)); /* CHATTY*/
+player.playSpecified(random(16, 29)); /* OTHER*/
+player.playSpecified((29)); /* IMPMarch*/
+}
