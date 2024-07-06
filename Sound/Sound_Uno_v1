@@ -13,7 +13,7 @@ byte vol = 30;
 #endif
 
 //DY::Player player; //RM
-DY::Player player(&Serial3);
+DY::Player player(&Serial0);
 MP3Trigger mp3Trigger;
 
 
