@@ -1,1 +1,194 @@
 
+/*******************************************************************************
+
+x Chn1 Drive    Stick   This connects to the drive arduino
+x chn2 Drive    Stick   This connects to the drive arduino
+Chn3 Utility Arm  Stick     
+x Chn4 Head Rotate  Left/Right  Stick   This connects to the drive arduino 
+Chn5 (rotary) Animation Control Seg 1 = 0 -  50.   Seg 2 = 60 - 160. Seg 3 = 160 - 255.
+Chn6 (rotary) Sound Other / Grumpy / Annoyed / Chatty
+Chn7 Seg 1: Rdoor + SAW . Seg 3: Dome Door + Arms Depends on 5  2 position switch 
+Chn8 Seg 1: Door + IA .  Seg 3: Periscope Depends on 5  2 position switch 
+x Chn9 Speed Select   3 position switch 
+Chn10 Sound Play    2 position switch 
+
+*******************************************************************************/
+
+/* Import libraries for Maestro and to use SoftwareSerial */
+#include <PololuMaestro.h>
+#include <SoftwareSerial.h>
+/*#include <MP3Trigger.h>*/
+#include <DYPlayerArduino.h> //RM
+
+// Default sound volume at startup
+// 0 = full volume, 255 off
+byte vol = 30;
+
+
+
+/* Setup RC Channels */
+int pin3 = 3;  // This is input for RC (channel 3) - Utility Arm
+int pin5 = 5;  // This is input for RC (channel 5) - 
+int pin6 = 6;  // This is input for RC (channel 6) - 
+int pin7 = 7;  // This is input for RC (channel 7) - 
+int pin8 = 8;  // This is input for RC (channel 8) - 
+int pin10 = 10;  // This is input for RC (channel 10) - 
+
+/* Setup default RC signal durations */
+int duration3 = 1500; // Duration of the pulse from the RC
+int duration5 = 1500; // Duration of the pulse from the RC
+int duration6 = 1500; // Duration of the pulse from the RC
+int duration7 = 1500; // Duration of the pulse from the RC
+int duration8 = 1500; // Duration of the pulse from the RC
+int duration10 = 1500; // Duration of the pulse from the RC
+
+float time;
+
+/* Setup default value of channels */
+int chn3 = -10;
+int chn5 = -10;
+int chn6 = -10;
+int chn7 = -10;
+int chn8 = -10;
+int chn10 = -10;
+
+
+/* Setup Serial connection to Maestro */
+SoftwareSerial maestroSerial(12, 13); /* Pin 12 RX, Pin 13 TX */
+MiniMaestro maestroHead(maestroSerial);
+
+SoftwareSerial DYPlayer(9, 11);
+DY::Player player(&DYPlayer);
+
+
+/* The setup routine runs once when you press reset */
+void setup() {
+
+ // Serial.begin(19200); /* uncomment to allow debugging. Do not set the serial baud to the same as the Maestro baud */
+  DYPlayer.begin(9600);
+  maestroSerial.begin(9600); /* set baud rate for maestro */
+  time = millis();
+  }
+
+
+/* The loop routine runs over and over again forever. */
+void loop() {
+
+/* Measures the input from rc channels */
+duration3 = pulseIn(pin3, HIGH); //Measures the input from rc channel 3
+duration5 = pulseIn(pin5, HIGH); //Measures the input from rc channel 3
+duration6 = pulseIn(pin6, HIGH); //Measures the input from rc channel 3
+duration7 = pulseIn(pin7, HIGH); //Measures the input from rc channel 3
+duration8 = pulseIn(pin8, HIGH); //Measures the input from rc channel 3
+duration10 = pulseIn(pin10, HIGH); //Measures the input from rc channel 3
+
+/* Sets the value of each channel to a mapped value */
+
+chn3 = map (duration3,1000,2000,0,2);
+chn5 = map (duration5,1000,2000,0,100);
+chn6 = map (duration6,1000,2000,0,100);
+chn7 = map (duration7,1000,2000,0,2);
+chn8 = map (duration8,1000,2000,0,2);
+chn10 = map (duration10,1000,2000,0,2);
+
+/* Trigger Animations
+
+Use the Copy all sequences to script command in the control center
+Add QUIT to SEQUENCE/SCRIPT Before the Return command
+
+*/
+
+//Util Arms
+  if (chn3 > 0) {
+   maestroHead.restartScript(3);    //Activate Utility arm
+  }
+  
+
+/* The next four triggers use a combo of the position of rotary switch 5 and switches 7 or 8 to trigger scripts */
+
+//LDoor and IA
+  if ((chn5 > 0) && (chn5 < 25) && (chn7 > 0)) {
+   maestroHead.restartScript(0);    //Activate lDoor and IA
+  }
+  
+//LDoor and IA
+  if ((chn5 > 0) && (chn5 < 25) && (chn8 > 0)) {
+   maestroHead.restartScript(0);    //Activate LDoor and IA
+  }
+  
+//Periscope
+  if ((chn5 > 30) && (chn5 < 60) && (chn7 > 0)) {
+   maestroHead.restartScript(1);    //Activate Periscope
+  }
+
+//Periscope
+  if ((chn5 > 30) && (chn5 < 60)&& (chn8 > 0)) {
+   maestroHead.restartScript(1);    //Activate Periscope
+  }
+
+  
+//Booster LED
+  if ((chn5 > 70) && (chn5 < 100) && (chn7 > 0)) {
+   maestroHead.restartScript(2);    //s
+  }
+
+//Booster Smoke
+  if ((chn5 > 70) && (chn5 < 100)&& (chn8 > 0)) {
+   maestroHead.restartScript(2);    //s
+  }
+
+/* The next four triggers use a combo of the position of rotary switch 6 and switch 10 to trigger audio playback  */
+
+//Grumpy
+  if ((chn6 > 0) && (chn6 < 25) && (chn10 > 0)) {
+   player.playSpecified(random(01, 10)); /* GRUMPY*/  
+  
+  }
+  
+  
+//Chatty
+  if ((chn6 > 30) && (chn6 < 60) && (chn10 > 0)) {
+   player.playSpecified(random(10, 16)); /* CHATTY*/
+ 
+  }
+
+  
+//Other
+  if ((chn6 > 70) && (chn6 < 90) && (chn10 > 0)) {
+   player.playSpecified(random(16, 29)); /* OTHER*/
+
+  }
+
+//IMPMarch
+  if ((chn6 > 90) && (chn6 < 100) && (chn10 > 0)) {
+   player.playSpecified(29); /* IMPMarch*/
+
+  }
+  
+
+/* The next functions use a combo of the position of rotary switch 6 and switch 10 to trigger MP3 playback */
+
+
+/* Debugging - Will only output if Serial.Begin is uncommented*/
+Serial.print ("chn3: ");
+Serial.print (chn3);
+Serial.print (" | ");
+Serial.print ("chn5: ");
+Serial.print (chn5);
+Serial.print (" | ");
+Serial.print ("chn6: ");
+Serial.print (chn6);
+Serial.print (" | ");
+Serial.print ("chn7: ");
+Serial.print (chn7);
+Serial.print (" | ");
+Serial.print ("chn8: ");
+Serial.print (chn8);
+Serial.print (" | ");
+Serial.print ("chn10: ");
+Serial.print (chn10);
+Serial.print (" | ");
+Serial.println();  /* Move to the next line for better readability */
+delay(200);  /* Adjust the delay based on your desired update rate */
+
+}
