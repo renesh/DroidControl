@@ -9,9 +9,9 @@ const int dirRightMotor = 7;  // Direction control for right motor
 // Pin definitions for receiver channels (PWM inputs)
 const int channel1Pin = 2;  // Channel 1 (left-right control, steering)
 const int channel2Pin = 3;  // Channel 2 (forward-reverse control)
-const int channel3Pin = 11; // Channel 3 (servo control based on Channel 5)
-const int channel4Pin = 8;  // Channel 4 (servo control based on Channel 5)
-const int channel5Pin = 10; // Channel 5 (switch-based control)
+const int channel3Pin = 9; // Channel 3 (servo control based on Channel 5)
+const int channel4Pin = 10;  // Channel 4 (servo control based on Channel 5)
+const int channel5Pin = 11; // Channel 5 (switch-based control)
 
 // Variables to store the pulse width readings
 int channel1Value = 0;
@@ -60,10 +60,10 @@ void setup() {
   pinMode(channel5Pin, INPUT); // Channel 5 input
 
   // Attach the servos to pins
-  MainBarServo.attach(9);     // MainBarServo attached to pin 9
-  NeckBoxServo.attach(12);    // NeckBoxServo attached to pin 12
-  HeadNodYes.attach(51);      // HeadNodYes attached to pin 13
-  HeadNodNo.attach(53);       // HeadNodNo attached to pin 14
+  MainBarServo.attach(47);     // MainBarServo attached to pin 47
+  NeckBoxServo.attach(49);    // NeckBoxServo attached to pin 49
+  HeadNodYes.attach(51);      // HeadNodYes attached to pin 51
+  HeadNodNo.attach(53);       // HeadNodNo attached to pin 53
 
   // Serial monitor for debugging
   Serial.begin(9600);
@@ -155,8 +155,7 @@ void loop() {
   }
 
   // Print the Channel 5 (Switch) value to the serial terminal
-  Serial.print("Ch5 (Switch): ");
-  Serial.println(channel5Value);
+
 
   // For debugging other channels
   Serial.print("Ch1: "); Serial.print(channel1Value);
@@ -168,6 +167,7 @@ void loop() {
   Serial.print(" | Right Motor Speed: "); Serial.print(rightMotorSpeed);
   Serial.print(" Dir: "); Serial.print(rightMotorDir ? "Reverse" : "Forward");
   Serial.print(" | NeckBox/MainBarServo or HeadNodYes/No Control: ");
+  Serial.print("Ch5 (Switch): "); Serial.print(channel5Value);
   Serial.print((channel5Value < 1500) ? "NeckBox/MainBar" : "HeadNodYes/No");
   Serial.println();
   
