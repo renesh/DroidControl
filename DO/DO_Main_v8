@@ -40,8 +40,8 @@ bool leftMotorDir = false;  // false for forward, true for reverse
 bool rightMotorDir = false; // false for forward, true for reverse
 
 // Servo objects
-Servo MainBarServo;
-Servo NeckBoxServo;
+Servo MainBarServo; // New Servo for Channel 3 when Channel 5 < 150
+Servo NeckBoxServo; // New Servo for Channel 4 when Channel 5 < 150
 Servo HeadNodYes;  // New Servo for Channel 3 when Channel 5 > 1500
 Servo HeadNodNo;   // New Servo for Channel 4 when Channel 5 > 1500
 
