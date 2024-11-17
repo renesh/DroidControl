@@ -12,7 +12,7 @@ Chn10 Sound Play    2 position switch
 
 // Default sound volume at startup
 // 0 = full volume, 255 off
-//byte vol = 30;
+byte vol = 30;
 
 
 
@@ -56,6 +56,12 @@ duration10 = pulseIn(pin10, HIGH); //Measures the input from rc channel 10
 chn6 = map (duration6,1000,2000,0,100);
 chn10 = map (duration10,1000,2000,-2,2);
 
+/* Trigger Animations
+
+Use the Copy all sequences to script command in the control center
+Add QUIT to SEQUENCE/SCRIPT Before the Return command
+
+*/
 
 /* The next four triggers use a combo of the position of rotary switch 6 and switch 10 to trigger audio playback  */
 
