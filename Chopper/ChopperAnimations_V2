@@ -1,0 +1,111 @@
+
+/*******************************************************************************
+
+Notes:
+
+*******************************************************************************/
+
+/* Import libraries for Maestro and to use SoftwareSerial */
+#include <PololuMaestro.h>
+#include <SoftwareSerial.h>
+
+/* Setup RC Channels */
+int pin5 = 5;  // This is input for RC (channel 5) - 
+int pin7 = 7;  // This is input for RC (channel 7) - 
+int pin8 = 8;  // This is input for RC (channel 8) - 
+
+/* Setup default RC signal durations */
+int duration5 = 1500; // Duration of the pulse from the RC
+int duration7 = 1500; // Duration of the pulse from the RC
+int duration8 = 1500; // Duration of the pulse from the RC
+
+float time;
+
+/* Setup default value of channels */
+int chn5 = -10;
+int chn7 = -10;
+int chn8 = -10;
+
+/* Setup Serial connection to Maestro */
+SoftwareSerial maestroSerial(12, 13); /* Pin 12 RX, Pin 13 TX */
+MiniMaestro maestroHead(maestroSerial);
+
+/* The setup routine runs once when you press reset */
+void setup() {
+
+  //Serial.begin(19200); /* uncomment to allow debugging. Do not set the serial baud to the same as the Maestro baud */
+  maestroSerial.begin(9600); /* set baud rate for maestro */
+  time = millis();
+  }
+
+
+/* The loop routine runs over and over again forever. */
+void loop() {
+
+/* Measures the input from rc channels */
+duration5 = pulseIn(pin5, HIGH); //Measures the input from rc channel 5
+duration7 = pulseIn(pin7, HIGH); //Measures the input from rc channel 7
+duration8 = pulseIn(pin8, HIGH); //Measures the input from rc channel 8
+
+/* Sets the value of each channel to a mapped value */
+
+chn5 = map (duration5,1000,2000,0,100);
+chn7 = map (duration7,1000,2000,0,2);
+chn8 = map (duration8,1000,2000,0,2);
+
+/* Trigger Animations
+
+Use the Copy all sequences to script command in the control center
+Add QUIT to SEQUENCE/SCRIPT Before the Return command
+
+*/
+
+
+/* The next four triggers use a combo of the position of rotary switch 5 and switches 7 or 8 to trigger scripts */
+
+//LDoor and IA
+  if ((chn5 > 0) && (chn5 < 25) && (chn7 > 0)) {
+   maestroHead.restartScript(0);    //DomeArm
+  }
+  
+//LDoor and IA
+  if ((chn5 > 0) && (chn5 < 25) && (chn8 > 0)) {
+   maestroHead.restartScript(1);    //DomeArm2
+  }
+  
+//LDoor and Tool
+  if ((chn5 > 30) && (chn5 < 60) && (chn7 > 0)) {
+   maestroHead.restartScript(2);    //LDoor
+  }
+
+//RDoor and Tool
+  if ((chn5 > 30) && (chn5 < 60)&& (chn8 > 0)) {
+   maestroHead.restartScript(3);    //RDoor
+  }
+
+  
+//UtilArm
+  if ((chn5 > 70) && (chn5 < 100) && (chn7 > 0)) {
+   maestroHead.restartScript(4);    //Util
+  }
+
+//UtilArm
+  if ((chn5 > 70) && (chn5 < 100)&& (chn8 > 0)) {
+   maestroHead.restartScript(4);    //Util
+  }
+
+
+/* Debugging - Will only output if Serial.Begin is uncommented, Check Baud rate for Terminal is NOT the same as Baud for Maestro*/
+Serial.print ("chn5: ");
+Serial.print (chn5);
+Serial.print (" | ");
+Serial.print ("chn7: ");
+Serial.print (chn7);
+Serial.print (" | ");
+Serial.print ("chn8: ");
+Serial.print (chn8);
+Serial.print (" | ");
+Serial.println();  /* Move to the next line for better readability */
+delay(200);  /* Adjust the delay based on your desired update rate */
+
+}
